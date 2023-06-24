@@ -2,6 +2,7 @@ package dev.afcasco.fctsorterbackend;
 
 
 import dev.afcasco.fctsorterbackend.entity.Company;
+import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.service.CompanyService;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +43,8 @@ public class CsvFilter {
                                     i[ADDRESS],
                                     i[CITY],
                                     i[ZIP_CODE],
-                                    i[PHONE]
+                                    i[PHONE],
+                                    Status.MARKED_FOR_REVIEW
 
                             )).peek(i-> {
                         if(i.getZipCode().length() == 4){

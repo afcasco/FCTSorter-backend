@@ -20,6 +20,8 @@ public class Company {
     private String city;
     private String zipCode;
     private String phone;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
 
 }

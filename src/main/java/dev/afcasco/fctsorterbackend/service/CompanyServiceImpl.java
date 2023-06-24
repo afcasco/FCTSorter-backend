@@ -2,9 +2,11 @@ package dev.afcasco.fctsorterbackend.service;
 
 import dev.afcasco.fctsorterbackend.entity.Company;
 import dev.afcasco.fctsorterbackend.dao.CompanyRepository;
+import dev.afcasco.fctsorterbackend.entity.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -20,6 +22,7 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findAll();
     }
 
+    @Override
     public List<Company> findCompanyByZipCode(String zipCode) {
         return companyRepository.findCompanyByZipCode(zipCode);
     }
@@ -45,7 +48,23 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void save(Company company) {
-        companyRepository.save(company);
+    public List<Company> findAllByStatus(Status status) {
+        return companyRepository.findAllByStatus(status);
+    }
+
+
+    @Override
+    public Company save(Company company) {
+        return companyRepository.save(company);
+    }
+
+    @Override
+    public Optional<Company> findById(Long id) {
+        return companyRepository.findById(id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        companyRepository.deleteById(id);
     }
 }

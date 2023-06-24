@@ -1,8 +1,10 @@
 package dev.afcasco.fctsorterbackend.service;
 
 import dev.afcasco.fctsorterbackend.entity.Company;
+import dev.afcasco.fctsorterbackend.entity.Status;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CompanyService {
 
@@ -18,7 +20,15 @@ public interface CompanyService {
 
     List<Company> findAllByNameContainsIgnoreCase(String text);
 
-    void save(Company company);
+    List<Company> findAllByStatus(Status status);
+
+    Company save(Company company);
+
+    Optional<Company> findById(Long id);
+
+    void deleteById(Long id);
+
+
 
 
 }
