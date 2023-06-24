@@ -12,14 +12,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/company")
-public class ApiController {
+public class CompanyController {
 
 
     private final CompanyService service;
     private CsvFilter csvFilter;
 
 
-    public ApiController(CompanyService service, CsvFilter csvFilter) {
+    public CompanyController(CompanyService service, CsvFilter csvFilter) {
         this.service = service;
         this.csvFilter = csvFilter;
     }
