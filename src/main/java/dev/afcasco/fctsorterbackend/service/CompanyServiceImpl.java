@@ -35,6 +35,16 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<Company> findAllByCityEqualsIgnoreCase(String city) {
+        return companyRepository.findAllByCityEqualsIgnoreCase(city);
+    }
+
+    @Override
+    public List<Company> findAllByNameContainsIgnoreCase(String text) {
+        return companyRepository.findAllByNameContainsIgnoreCase(text);
+    }
+
+    @Override
     public void save(Company company) {
         companyRepository.save(company);
     }

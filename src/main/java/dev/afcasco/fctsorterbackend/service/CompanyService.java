@@ -14,6 +14,10 @@ public interface CompanyService {
 
     List<Company> findCompaniesByZipCodeContains(String contains);
 
+    List<Company> findAllByCityEqualsIgnoreCase(String city);
+
+    List<Company> findAllByNameContainsIgnoreCase(String text);
+
     void save(Company company);
 
 

@@ -13,4 +13,8 @@ public interface CompanyRepository extends JpaRepository<Company,Long> {
     List<Company> findCompaniesByZipCodeStartsWith(String startsWith);
 
     List<Company> findCompaniesByZipCodeContains(String contains);
+
+    List<Company> findAllByCityEqualsIgnoreCase(String city);
+
+    List<Company> findAllByNameContainsIgnoreCase(String text);
 }

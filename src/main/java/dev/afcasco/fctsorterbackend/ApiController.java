@@ -46,10 +46,18 @@ public class ApiController {
         return service.findCompaniesByZipCodeStartsWith(zip);
     }
 
-
-
     @GetMapping("/findByZipCodeContains")
     public List<Company> cpStartsWith(@RequestParam("zip") String zip){
         return service.findCompaniesByZipCodeStartsWith(zip);
+    }
+
+    @GetMapping("/findByCity")
+    public List<Company> findByCity(@RequestParam("city") String city){
+        return service.findAllByCityEqualsIgnoreCase(city);
+    }
+
+    @GetMapping("/findByNameContains")
+    public List<Company> findByNameContains(@RequestParam("text") String text){
+        return service.findAllByNameContainsIgnoreCase(text);
     }
 }
