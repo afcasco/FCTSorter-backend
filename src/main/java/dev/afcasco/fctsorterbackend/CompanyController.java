@@ -5,18 +5,21 @@ import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.service.CompanyService;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.webjars.NotFoundException;
+import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.List;
 
 
 @RestController
+
 public class CompanyController {
 
 
     private final CompanyService service;
-
 
 
     public CompanyController(CompanyService service) {
@@ -34,6 +37,7 @@ public class CompanyController {
     public Company getCompany(@PathVariable Long id) {
         return service.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
     }
+
 
     @PutMapping("/companies/{id}")
     public Company replaceCompany(@RequestBody Company newCompany, @PathVariable Long id) {
