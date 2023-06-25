@@ -6,7 +6,6 @@ import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.service.CompanyService;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -27,12 +26,6 @@ public class CompanyController {
 
     @GetMapping("/companies")
     public List<Company> findAll() {
-        /*List<Company> read = csvFilter.readAllFromCsv();
-        read.forEach(i->{
-            System.out.println(i);
-            service.save(i);
-        });*/
-        service.save(new Company(0L, "test", "test", "test", "test", "test", "test", Status.ACTIVE));
         return service.findAll();
     }
 
