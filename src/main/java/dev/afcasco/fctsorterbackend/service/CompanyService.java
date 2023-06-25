@@ -28,6 +28,8 @@ public interface CompanyService {
 
     void deleteById(Long id);
 
+    boolean existsById(Long id);
+
 
 
 

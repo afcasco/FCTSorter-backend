@@ -20,4 +20,6 @@ public interface CompanyRepository extends JpaRepository<Company,Long> {
     List<Company> findAllByNameContainsIgnoreCase(String text);
 
     List<Company> findAllByStatus(Status status);
+
+    boolean existsById(Long id);
 }

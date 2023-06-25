@@ -44,7 +44,7 @@ public class CsvFilter {
                                     i[CITY],
                                     i[ZIP_CODE],
                                     i[PHONE],
-                                    Status.MARKED_FOR_REVIEW
+                                    Status.ACTIVE
 
                             )).peek(i-> {
                         if(i.getZipCode().length() == 4){

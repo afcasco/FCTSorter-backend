@@ -5,39 +5,43 @@ import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.service.CompanyService;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
 public class CompanyController {
 
-
     private final CompanyService service;
-    private CsvFilter csvFilter;
 
-
-    public CompanyController(CompanyService service, CsvFilter csvFilter) {
+    public CompanyController(CompanyService service) {
         this.service = service;
-        this.csvFilter = csvFilter;
     }
 
 
     @GetMapping("/companies")
-    public List<Company> findAll() {
-        return service.findAll();
+    public ResponseEntity<?> findAll() {
+        List<Company> companies = service.findAll();
+        return new ResponseEntity<>(companies,HttpStatus.OK);
     }
 
     @SneakyThrows
     @GetMapping("/companies/{id}")
-    public Company getCompany(@PathVariable Long id) {
-        return service.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
+    public ResponseEntity<Company> getCompany(@PathVariable Long id) {
+        Company company =  service.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
+        return new ResponseEntity<>(company, HttpStatus.OK);
     }
 
     @PutMapping("/companies/{id}")
-    public Company replaceCompany(@RequestBody Company newCompany, @PathVariable Long id) {
-        return service.findById(id)
+    public ResponseEntity<Company> replaceCompany(@RequestBody Company newCompany, @PathVariable Long id) {
+        Company saved = service.findById(id)
                 .map(company -> {
                     company.setCif(newCompany.getCif());
                     company.setName(newCompany.getName());
@@ -49,18 +53,23 @@ public class CompanyController {
                 })
                 .orElseGet(() -> {
                     newCompany.setId(id);
-                    return service.save(newCompany);
+                   return service.save(newCompany);
                 });
+        return new ResponseEntity<>(saved,HttpStatus.OK);
     }
 
     @PostMapping("/companies")
-    public Company newCompany(@RequestBody Company company) {
-        return service.save(company);
+    public ResponseEntity<Company> newCompany(@RequestBody Company company) {
+        return new ResponseEntity<>(service.save(company),HttpStatus.CREATED);
     }
 
     @DeleteMapping("/companies/{id}")
-    public void deleteCompany(@PathVariable Long id) {
-        service.deleteById(id);
+    public HttpStatus deleteCompany(@PathVariable Long id) {
+        if(service.existsById(id)){
+            service.deleteById(id);
+            return HttpStatus.NO_CONTENT;
+        }
+        return HttpStatus.NOT_FOUND;
     }
 
     @GetMapping("/companies/zip/{zip}")
