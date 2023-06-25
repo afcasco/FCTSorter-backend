@@ -16,12 +16,11 @@ public class CompanyController {
 
 
     private final CompanyService service;
-    private CsvFilter csvFilter;
 
 
-    public CompanyController(CompanyService service, CsvFilter csvFilter) {
+
+    public CompanyController(CompanyService service) {
         this.service = service;
-        this.csvFilter = csvFilter;
     }
 
 
