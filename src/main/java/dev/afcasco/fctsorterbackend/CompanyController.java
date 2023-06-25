@@ -1,17 +1,22 @@
 package dev.afcasco.fctsorterbackend;
 
 import dev.afcasco.fctsorterbackend.entity.Company;
+import dev.afcasco.fctsorterbackend.entity.CompanyModelAssembler;
 import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.service.CompanyService;
 import lombok.SneakyThrows;
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
@@ -20,28 +25,35 @@ public class CompanyController {
 
 
     private final CompanyService service;
+    private final CompanyModelAssembler assembler;
 
 
-    public CompanyController(CompanyService service) {
+    public CompanyController(CompanyService service, CompanyModelAssembler assembler) {
         this.service = service;
+        this.assembler = assembler;
     }
 
 
     @GetMapping("/companies")
-    public List<Company> findAll() {
-        return service.findAll();
+    public CollectionModel<EntityModel<Company>> findAll() {
+        List<EntityModel<Company>> companies = service.findAll().stream()
+                .map(assembler::toModel)
+                .toList();
+
+        return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAll()).withSelfRel());
     }
 
     @SneakyThrows
     @GetMapping("/companies/{id}")
-    public Company getCompany(@PathVariable Long id) {
-        return service.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
+    public EntityModel<Company> findById(@PathVariable Long id) {
+        Company company = service.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
+        return assembler.toModel(company);
     }
 
 
     @PutMapping("/companies/{id}")
-    public Company replaceCompany(@RequestBody Company newCompany, @PathVariable Long id) {
-        return service.findById(id)
+    public ResponseEntity<?> replaceCompany(@RequestBody Company newCompany, @PathVariable Long id) {
+        Company updatedCompany = service.findById(id)
                 .map(company -> {
                     company.setCif(newCompany.getCif());
                     company.setName(newCompany.getName());
@@ -55,47 +67,70 @@ public class CompanyController {
                     newCompany.setId(id);
                     return service.save(newCompany);
                 });
-    }
 
-    @PostMapping("/companies")
-    public Company newCompany(@RequestBody Company company) {
-        return service.save(company);
+        EntityModel<Company> entityModel = assembler.toModel(updatedCompany);
+
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     @DeleteMapping("/companies/{id}")
-    public void deleteCompany(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCompany(@PathVariable Long id) {
         service.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/companies")
+    public ResponseEntity<?> newCompany(@RequestBody Company company) {
+        EntityModel<Company> entityModel = assembler.toModel(service.save(company));
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
+    }
+
+
     @GetMapping("/companies/zip/{zip}")
-    public List<Company> findByZipCode(@PathVariable("zip") String zip) {
-        return service.findCompanyByZipCode(zip);
+    public CollectionModel<EntityModel<Company>> findByZipCode(@PathVariable("zip") String zip) {
+        List<EntityModel<Company>> companies = service.findCompanyByZipCode(zip).stream()
+                .map(assembler::toModel)
+                .toList();
+
+        return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findByZipCode(zip)).withSelfRel());
     }
 
 
     @GetMapping("/companies/city/{city}")
-    public List<Company> findByCity(@PathVariable("city") String city) {
-        return service.findAllByCityEqualsIgnoreCase(city);
+    public CollectionModel<EntityModel<Company>> findAllByCityEqualsIgnoreCase(@PathVariable("city") String city) {
+        List<EntityModel<Company>> companies = service.findAllByCityEqualsIgnoreCase(city).stream()
+                .map(assembler::toModel)
+                .toList();
+
+        return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByCityEqualsIgnoreCase(city)).withSelfRel());
     }
 
     @GetMapping("/companies/status/{status}")
-    public List<Company> findAllByStatus(@PathVariable("status") Status status) {
-        return service.findAllByStatus(status);
+    public CollectionModel<EntityModel<Company>> findAllByStatus(@PathVariable("status") Status status) {
+        List<EntityModel<Company>> companies = service.findAllByStatus(status).stream()
+                .map(assembler::toModel)
+                .toList();
+
+        return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByStatus(status)).withSelfRel());
     }
 
     @GetMapping("/companies/nameContains")
-    public List<Company> findByNameContains(@RequestParam("text") String text) {
-        return service.findAllByNameContainsIgnoreCase(text);
+    public CollectionModel<EntityModel<Company>> findAllByNameContainsIgnoreCase(@RequestParam("text") String text) {
+        List<EntityModel<Company>> companies = service.findAllByNameContainsIgnoreCase(text).stream()
+                .map(assembler::toModel)
+                .toList();
+
+        return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByNameContainsIgnoreCase(text)).withSelfRel());
     }
 
     @GetMapping("/companies/zipStartsWith")
-    public List<Company> findByZipCodeStartsWith(@RequestParam("zip") String zip) {
-        return service.findCompaniesByZipCodeStartsWith(zip);
-    }
+    public CollectionModel<EntityModel<Company>> findCompaniesByZipCodeStartsWith(@RequestParam("zip") String zip) {
+        List<EntityModel<Company>> companies = service.findCompaniesByZipCodeStartsWith(zip).stream()
+                .map(assembler::toModel)
+                .toList();
 
-    @GetMapping("/zipContains")
-    public List<Company> cpStartsWith(@RequestParam("zip") String zip) {
-        return service.findCompaniesByZipCodeStartsWith(zip);
-    }
+        return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findCompaniesByZipCodeStartsWith(zip)).withSelfRel());
 
+    }
 }
