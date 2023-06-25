@@ -5,6 +5,7 @@ import dev.afcasco.fctsorterbackend.entity.CompanyModelAssembler;
 import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.service.CompanyService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -32,7 +33,6 @@ public class CompanyController {
         this.service = service;
         this.assembler = assembler;
     }
-
 
     @GetMapping("/companies")
     public CollectionModel<EntityModel<Company>> findAll() {

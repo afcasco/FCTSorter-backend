@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.afcasco</groupId>
-    <artifactId>FCTSorter-backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>fctfinder-backend</artifactId>
+    <version>0.0.1</version>
     <name>FCTSorter-backend</name>
     <description>FCTSorter-backend</description>
     <properties>
