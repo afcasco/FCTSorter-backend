@@ -6,6 +6,10 @@ import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.service.CompanyService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -21,7 +25,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-
+@Tag(name="Companies API")
 public class CompanyController {
 
 
@@ -34,6 +38,7 @@ public class CompanyController {
         this.assembler = assembler;
     }
 
+    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
     @GetMapping("/companies")
     public CollectionModel<EntityModel<Company>> findAll() {
         List<EntityModel<Company>> companies = service.findAll().stream()
@@ -43,9 +48,17 @@ public class CompanyController {
         return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAll()).withSelfRel());
     }
 
+
+    @Operation(summary = "Get a company by id",description = "Returns a company matching the passed id")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "Ok - Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "Not found - The company was not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request - Wrong format for parameter id")
+
+    })
     @SneakyThrows
     @GetMapping("/companies/{id}")
-    public EntityModel<Company> findById(@PathVariable Long id) {
+    public EntityModel<Company> findById(@PathVariable @Parameter(name="id",description = "Company id", example = "1") Long id) {
         Company company = service.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
         return assembler.toModel(company);
     }
