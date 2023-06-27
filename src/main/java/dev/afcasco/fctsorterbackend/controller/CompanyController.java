@@ -17,6 +17,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -28,6 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @Tag(name="Companies API")
+@RequestMapping("/api")
 public class CompanyController {
 
 
@@ -42,6 +44,7 @@ public class CompanyController {
 
     @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
     @GetMapping("/companies")
+    @PreAuthorize("permitAll()")
     public CollectionModel<EntityModel<Company>> findAll() {
         List<EntityModel<Company>> companies = service.findAll().stream()
                 .map(assembler::toModel)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.afcasco.fctsorterbackend.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +19,10 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;
+    @Getter
     private Long id;
     private String username;
+    @Getter
     private String email;
     @JsonIgnore
     private String password;
