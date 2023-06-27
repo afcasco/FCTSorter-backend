@@ -4,7 +4,6 @@ import dev.afcasco.fctsorterbackend.entity.Company;
 import dev.afcasco.fctsorterbackend.entity.CompanyModelAssembler;
 import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
-import dev.afcasco.fctsorterbackend.service.CompanyService;
 import dev.afcasco.fctsorterbackend.service.CompanyServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,7 +16,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -26,6 +24,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+// TODO add authorization level to methods @PreAuthorize
 
 @RestController
 @Tag(name="Companies API")
@@ -44,7 +43,6 @@ public class CompanyController {
 
     @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
     @GetMapping("/companies")
-    @PreAuthorize("permitAll()")
     public CollectionModel<EntityModel<Company>> findAll() {
         List<EntityModel<Company>> companies = service.findAll().stream()
                 .map(assembler::toModel)
