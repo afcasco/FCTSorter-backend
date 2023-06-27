@@ -1,5 +1,9 @@
 package dev.afcasco.fctsorterbackend.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.FORBIDDEN)
 public class TokenRefreshException extends RuntimeException {
 
     private static final long serialVersionUUID = 1L;

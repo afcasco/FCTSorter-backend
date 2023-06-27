@@ -2,6 +2,7 @@ package dev.afcasco.fctsorterbackend.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -9,11 +10,12 @@ import java.time.Instant;
 @Entity(name="refreshtoken")
 @Getter
 @Setter
+@NoArgsConstructor
 public class RefreshToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

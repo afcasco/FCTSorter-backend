@@ -1,6 +1,5 @@
 package dev.afcasco.fctsorterbackend.advice;
 
-import dev.afcasco.fctsorterbackend.exception.ErrorMessage;
 import dev.afcasco.fctsorterbackend.exception.TokenRefreshException;
 
 import java.util.Date;

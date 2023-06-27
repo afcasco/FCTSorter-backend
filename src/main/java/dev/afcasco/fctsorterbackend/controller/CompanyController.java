@@ -4,7 +4,7 @@ import dev.afcasco.fctsorterbackend.entity.Company;
 import dev.afcasco.fctsorterbackend.entity.CompanyModelAssembler;
 import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
-import dev.afcasco.fctsorterbackend.service.CompanyServiceImpl;
+import dev.afcasco.fctsorterbackend.repository.CompanyRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +25,6 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-// TODO add authorization level to methods @PreAuthorize
 
 @RestController
 @Tag(name="Companies API")
@@ -33,12 +32,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CompanyController {
 
 
-    private final CompanyServiceImpl service;
+    private final CompanyRepository repository;
     private final CompanyModelAssembler assembler;
 
 
-    public CompanyController(CompanyServiceImpl service, CompanyModelAssembler assembler) {
-        this.service = service;
+    public CompanyController(CompanyRepository repository, CompanyModelAssembler assembler) {
+        this.repository = repository;
         this.assembler = assembler;
     }
 
@@ -46,7 +45,7 @@ public class CompanyController {
     @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
     @GetMapping("/companies")
     public CollectionModel<EntityModel<Company>> findAll() {
-        List<EntityModel<Company>> companies = service.findAll().stream()
+        List<EntityModel<Company>> companies = repository.findAll().stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -65,7 +64,7 @@ public class CompanyController {
     @SneakyThrows
     @GetMapping("/companies/{id}")
     public EntityModel<Company> findById(@PathVariable @Parameter(name="id",description = "Company id", example = "1") Long id) {
-        Company company = service.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
+        Company company = repository.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
         return assembler.toModel(company);
     }
 
@@ -80,7 +79,7 @@ public class CompanyController {
     @PutMapping("/companies/{id}")
     @Parameter(name = "id", description = "Id of the company to update", example = "1")
     public ResponseEntity<?> replaceCompany(@Valid @RequestBody Company newCompany, @PathVariable Long id) {
-        Company updatedCompany = service.findById(id)
+        Company updatedCompany = repository.findById(id)
                 .map(company -> {
                     company.setCif(newCompany.getCif());
                     company.setName(newCompany.getName());
@@ -88,11 +87,11 @@ public class CompanyController {
                     company.setCity(newCompany.getCity());
                     company.setZipCode(newCompany.getZipCode());
                     company.setPhone(newCompany.getPhone());
-                    return service.save(company);
+                    return repository.save(company);
                 })
                 .orElseGet(() -> {
                     newCompany.setId(id);
-                    return service.save(newCompany);
+                    return repository.save(newCompany);
                 });
 
         EntityModel<Company> entityModel = assembler.toModel(updatedCompany);
@@ -111,7 +110,7 @@ public class CompanyController {
     })
     @DeleteMapping("/companies/{id}")
     public ResponseEntity<?> deleteCompany(@PathVariable Long id) {
-        service.deleteById(id);
+        repository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -125,7 +124,7 @@ public class CompanyController {
     })
     @PostMapping("/companies")
     public ResponseEntity<?> newCompany(@Valid @RequestBody Company company) {
-        EntityModel<Company> entityModel = assembler.toModel(service.save(company));
+        EntityModel<Company> entityModel = assembler.toModel(repository.save(company));
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
     }
@@ -141,7 +140,7 @@ public class CompanyController {
     @Parameter(name = "zip", description = "Zip code to match", example = "80085")
     @GetMapping("/companies/zip/{zip}")
     public CollectionModel<EntityModel<Company>> findByZipCode(@PathVariable("zip") String zip) {
-        List<EntityModel<Company>> companies = service.findCompanyByZipCode(zip).stream()
+        List<EntityModel<Company>> companies = repository.findCompanyByZipCode(zip).stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -158,7 +157,7 @@ public class CompanyController {
     @Parameter(name = "City", description = "City to match", example = "Springfield")
     @GetMapping("/companies/city/{city}")
     public CollectionModel<EntityModel<Company>> findAllByCityEqualsIgnoreCase(@PathVariable("city") String city) {
-        List<EntityModel<Company>> companies = service.findAllByCityEqualsIgnoreCase(city).stream()
+        List<EntityModel<Company>> companies = repository.findAllByCityEqualsIgnoreCase(city).stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -176,7 +175,7 @@ public class CompanyController {
     @Parameter(name = "Status", description = "Status to match (ACTIVE, INACTIVE, MARKED_FOR_REVIEW)", example = "ACTIVE")
     @GetMapping("/companies/status/{status}")
     public CollectionModel<EntityModel<Company>> findAllByStatus(@PathVariable("status") Status status) {
-        List<EntityModel<Company>> companies = service.findAllByStatus(status).stream()
+        List<EntityModel<Company>> companies = repository.findAllByStatus(status).stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -194,7 +193,7 @@ public class CompanyController {
     @Parameter(name = "text", description = "text to search for in the companies names", example = "web")
     @GetMapping("/companies/nameContains")
     public CollectionModel<EntityModel<Company>> findAllByNameContainsIgnoreCase(@RequestParam("text") String text) {
-        List<EntityModel<Company>> companies = service.findAllByNameContainsIgnoreCase(text).stream()
+        List<EntityModel<Company>> companies = repository.findAllByNameContainsIgnoreCase(text).stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -210,7 +209,7 @@ public class CompanyController {
     @Parameter(name = "digits", description = "The starting digits of the zip code we want to search for", example = "08 - would give companies from Barcelona region")
     @GetMapping("/companies/zipStartsWith")
     public CollectionModel<EntityModel<Company>> findCompaniesByZipCodeStartsWith(@RequestParam("zip") String zip) {
-        List<EntityModel<Company>> companies = service.findCompaniesByZipCodeStartsWith(zip).stream()
+        List<EntityModel<Company>> companies = repository.findCompaniesByZipCodeStartsWith(zip).stream()
                 .map(assembler::toModel)
                 .toList();
 

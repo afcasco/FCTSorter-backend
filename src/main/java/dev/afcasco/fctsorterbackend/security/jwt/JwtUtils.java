@@ -2,10 +2,7 @@ package dev.afcasco.fctsorterbackend.security.jwt;
 
 import dev.afcasco.fctsorterbackend.entity.User;
 import dev.afcasco.fctsorterbackend.security.services.UserDetailsImpl;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -39,14 +36,17 @@ public class JwtUtils {
     private String jwtRefreshCookie;
 
     public String getJwtFromCookies(HttpServletRequest request) {
-        Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-        return cookie != null ? cookie.getValue() : null;
+        return getCookieValueByName(request, jwtCookie);
     }
 
-    public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal){
+    public ResponseCookie getCleanJwtCookie() {
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, null).path("/api").build();
+        return cookie;
+    }
+
+    public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
         String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-        return ResponseCookie.from(jwtCookie,jwt).path("/api")
-                .maxAge(24 * 60 * 60).httpOnly(true).build();
+        return generateCookie(jwtCookie, jwt, "/api");
     }
 
     public ResponseCookie generateJwtCookie(User user) {
@@ -57,6 +57,7 @@ public class JwtUtils {
     public ResponseCookie generateRefreshJwtCookie(String refreshToken){
         return generateCookie(jwtRefreshCookie, refreshToken,"/api/auth/refreshtoken");
     }
+
     public String getJwtRefreshFromCookies(HttpServletRequest request) {
         return getCookieValueByName(request, jwtRefreshCookie);
     }
@@ -77,11 +78,6 @@ public class JwtUtils {
     }
 
 
-
-    public ResponseCookie getCleanJwtCookie() {
-        return ResponseCookie.from(jwtCookie, null).path("/api").build();
-    }
-
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
@@ -99,7 +95,7 @@ public class JwtUtils {
             logger.error("JWT token is expired: {}", e.getMessage());
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (SignatureException e) {
+        } catch (UnsupportedJwtException e) {
             logger.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());

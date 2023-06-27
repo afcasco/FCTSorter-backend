@@ -1,4 +1,4 @@
-package dev.afcasco.fctsorterbackend.exception;
+package dev.afcasco.fctsorterbackend.advice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

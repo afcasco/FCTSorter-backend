@@ -3,7 +3,7 @@ package dev.afcasco.fctsorterbackend.utils;
 
 import dev.afcasco.fctsorterbackend.entity.Company;
 import dev.afcasco.fctsorterbackend.entity.Status;
-import dev.afcasco.fctsorterbackend.service.CompanyService;
+import dev.afcasco.fctsorterbackend.repository.CompanyRepository;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,15 +16,15 @@ import java.util.regex.Pattern;
 @Component
 public class CsvParser {
 
-    CompanyService service;
+    CompanyRepository repository;
     private final static int NAME_CIF = 0;
     private final static int ADDRESS = 2;
     private final static int CITY = 4;
     private final static int ZIP_CODE = 3;
     private final static int PHONE = 5;
 
-    public CsvParser(CompanyService service) {
-        this.service = service;
+    public CsvParser(CompanyRepository repository) {
+        this.repository = repository;
     }
 
     public List<Company> readAllFromCsv() {
