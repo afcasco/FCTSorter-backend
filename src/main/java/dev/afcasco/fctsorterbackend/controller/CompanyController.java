@@ -42,6 +42,7 @@ public class CompanyController {
         this.assembler = assembler;
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
     @GetMapping("/companies")
     public CollectionModel<EntityModel<Company>> findAll() {
@@ -53,7 +54,7 @@ public class CompanyController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get a company by id",description = "Returns a company matching the passed id")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Successfully retrieved"),
@@ -69,6 +70,7 @@ public class CompanyController {
     }
 
 
+    @PreAuthorize("hasAnyRole('ADMIN','MOD')")
     @Operation(summary = "Update an existing company",description = "Updates an existing company given it's id, or creates a new one if it does not exist")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "201", description = "Created - Resource update/created"),
@@ -97,6 +99,8 @@ public class CompanyController {
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
+
+    @PreAuthorize("hasAnyRole('ADMIN','MOD')")
     @SneakyThrows
     @Operation(summary = "Delete a company",description = "Delete an existing company")
     @Parameter(name = "id", description = "Id of the company to delete", example = "1")
@@ -112,6 +116,7 @@ public class CompanyController {
     }
 
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create a company",description = "Adds a new company to the database")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "201", description = "Created - Resource created"),
@@ -127,6 +132,7 @@ public class CompanyController {
 
 
     // TODO: 25/6/23 add zip number format validation when parameter is changed from String to int in the entity
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by zip code",description = "Finds all companies in the given zip code")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -143,6 +149,7 @@ public class CompanyController {
     }
 
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by city",description = "Finds all companies in the given city")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -159,6 +166,7 @@ public class CompanyController {
     }
 
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by status",description = "Finds companies with a given status")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -175,6 +183,8 @@ public class CompanyController {
         return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByStatus(status)).withSelfRel());
     }
 
+
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by name containing",description = "Finds companies whose name contains the passed parameter")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -191,6 +201,8 @@ public class CompanyController {
         return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByNameContainsIgnoreCase(text)).withSelfRel());
     }
 
+
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by first digits of zip code",description = "Finds companies whose zip code starts with the given digits, useful to get companies by region")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
