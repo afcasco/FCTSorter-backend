@@ -1,7 +1,7 @@
 package dev.afcasco.fctsorterbackend.service;
 
 import dev.afcasco.fctsorterbackend.entity.Company;
-import dev.afcasco.fctsorterbackend.dao.CompanyRepository;
+import dev.afcasco.fctsorterbackend.repository.CompanyRepository;
 import dev.afcasco.fctsorterbackend.entity.Status;
 import org.springframework.stereotype.Service;
 

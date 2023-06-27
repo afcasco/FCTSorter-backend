@@ -1,4 +1,4 @@
-package dev.afcasco.fctsorterbackend.dao;
+package dev.afcasco.fctsorterbackend.repository;
 
 import dev.afcasco.fctsorterbackend.entity.ERole;
 import dev.afcasco.fctsorterbackend.entity.Role;

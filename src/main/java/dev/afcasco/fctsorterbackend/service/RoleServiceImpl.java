@@ -1,6 +1,6 @@
 package dev.afcasco.fctsorterbackend.service;
 
-import dev.afcasco.fctsorterbackend.dao.RoleRepository;
+import dev.afcasco.fctsorterbackend.repository.RoleRepository;
 import dev.afcasco.fctsorterbackend.entity.ERole;
 import dev.afcasco.fctsorterbackend.entity.Role;
 import org.springframework.stereotype.Service;

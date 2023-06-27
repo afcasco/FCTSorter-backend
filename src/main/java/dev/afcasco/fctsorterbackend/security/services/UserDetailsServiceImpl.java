@@ -1,8 +1,6 @@
 package dev.afcasco.fctsorterbackend.security.services;
 
-import dev.afcasco.fctsorterbackend.dao.UserRepository;
 import dev.afcasco.fctsorterbackend.entity.User;
-import dev.afcasco.fctsorterbackend.service.UserService;
 import dev.afcasco.fctsorterbackend.service.UserServiceImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

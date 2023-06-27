@@ -63,8 +63,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(AUTH_WHITE_LIST).permitAll()
-                        .requestMatchers("/api/users/**").permitAll()
-                                .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/api/users/**").permitAll()
+                               // .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/companies/**").permitAll()
                                 .anyRequest().authenticated());
 
@@ -77,12 +77,9 @@ public class WebSecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/v2/api-docs/**",
-            "/swagger-resources/**"
+            "/swagger-resources/**",
+            "/api/auth/**"
     };
-
-
-
-
 
 
 }
