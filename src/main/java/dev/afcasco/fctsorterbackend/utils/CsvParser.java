@@ -1,4 +1,4 @@
-package dev.afcasco.fctsorterbackend;
+package dev.afcasco.fctsorterbackend.utils;
 
 
 import dev.afcasco.fctsorterbackend.entity.Company;

@@ -5,6 +5,7 @@ import dev.afcasco.fctsorterbackend.entity.CompanyModelAssembler;
 import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.service.CompanyService;
+import dev.afcasco.fctsorterbackend.service.CompanyServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,11 +31,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CompanyController {
 
 
-    private final CompanyService service;
+    private final CompanyServiceImpl service;
     private final CompanyModelAssembler assembler;
 
 
-    public CompanyController(CompanyService service, CompanyModelAssembler assembler) {
+    public CompanyController(CompanyServiceImpl service, CompanyModelAssembler assembler) {
         this.service = service;
         this.assembler = assembler;
     }
