@@ -29,10 +29,10 @@ public class JwtUtils {
     @Value("${fctfinder.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("fctfinder.app.jwtExpirationMs")
-    private String jwtExpirationMs;
+    @Value("${fctfinder.app.jwtExpirationMs}")
+    private int jwtExpirationMs;
 
-    @Value("fctfinder.app.jwtCookieName")
+    @Value("${fctfinder.app.jwtCookieName}")
     private String jwtCookie;
 
     public String getJwtFromCookies(HttpServletRequest request) {
@@ -80,7 +80,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime()+ jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }

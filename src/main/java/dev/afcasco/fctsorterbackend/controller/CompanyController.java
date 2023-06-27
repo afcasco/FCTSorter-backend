@@ -16,6 +16,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -52,6 +53,7 @@ public class CompanyController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get a company by id",description = "Returns a company matching the passed id")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Successfully retrieved"),
