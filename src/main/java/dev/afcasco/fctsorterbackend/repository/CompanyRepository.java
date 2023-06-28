@@ -7,21 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
 @Repository
 public interface CompanyRepository extends JpaRepository<Company,Long> {
 
     List<Company> findCompanyByZipCode(String zipCode);
-
     List<Company> findCompaniesByZipCodeStartsWith(String startsWith);
-
-    List<Company> findCompaniesByZipCodeContains(String contains);
-
     List<Company> findAllByCityEqualsIgnoreCase(String city);
-
     List<Company> findAllByNameContainsIgnoreCase(String text);
-
     List<Company> findAllByStatus(Status status);
-
     boolean existsById(Long id);
 }

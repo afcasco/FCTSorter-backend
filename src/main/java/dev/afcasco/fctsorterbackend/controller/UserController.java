@@ -2,7 +2,7 @@ package dev.afcasco.fctsorterbackend.controller;
 
 import dev.afcasco.fctsorterbackend.repository.UserRepository;
 import dev.afcasco.fctsorterbackend.entity.User;
-import dev.afcasco.fctsorterbackend.entity.UserModelAssembler;
+import dev.afcasco.fctsorterbackend.modelassembler.UserModelAssembler;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@Tag(name="User Management API")
+@Tag(name="User Management")
 @RequestMapping("/api/users")
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {

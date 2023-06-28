@@ -4,7 +4,6 @@ import dev.afcasco.fctsorterbackend.entity.RefreshToken;
 import dev.afcasco.fctsorterbackend.exception.TokenRefreshException;
 import dev.afcasco.fctsorterbackend.repository.RefreshTokenRepository;
 import dev.afcasco.fctsorterbackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +18,14 @@ public class RefreshTokenService  {
     @Value("${fctfinder.app.jwtRefreshExirationMs}")
     private Long refreshTokenDurationMs;
 
-    @Autowired
-    private  RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    @Autowired
-    private  UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
+    }
 
 
     public Optional<RefreshToken> findByToken(String token) {
@@ -51,7 +53,7 @@ public class RefreshTokenService  {
     }
 
     @Transactional
-    public int deleteByUserId(Long userId) {
-        return refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());
+    public void deleteByUserId(Long userId) {
+        refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());
     }
 }

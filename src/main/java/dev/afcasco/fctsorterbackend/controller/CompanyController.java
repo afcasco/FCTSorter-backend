@@ -1,7 +1,7 @@
 package dev.afcasco.fctsorterbackend.controller;
 
 import dev.afcasco.fctsorterbackend.entity.Company;
-import dev.afcasco.fctsorterbackend.entity.CompanyModelAssembler;
+import dev.afcasco.fctsorterbackend.modelassembler.CompanyModelAssembler;
 import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.repository.CompanyRepository;
@@ -27,7 +27,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-@Tag(name="Companies API")
+@Tag(name="Company Management")
 @RequestMapping("/api")
 public class CompanyController {
 
