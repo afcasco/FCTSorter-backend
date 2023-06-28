@@ -27,7 +27,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-@Tag(name="Company Management")
+@Tag(name="Company", description = "Company Management Endpoints")
 @RequestMapping("/api")
 public class CompanyController {
 
@@ -42,7 +42,7 @@ public class CompanyController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
+    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database", tags = {"User Endpoints"})
     @GetMapping("/companies")
     public CollectionModel<EntityModel<Company>> findAll() {
         List<EntityModel<Company>> companies = repository.findAll().stream()

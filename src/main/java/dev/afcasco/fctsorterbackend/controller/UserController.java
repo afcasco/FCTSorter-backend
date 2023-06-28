@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@Tag(name="User Management")
+@Tag(name="User", description = "User Management Endpoints")
 @RequestMapping("/api/users")
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {
