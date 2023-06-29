@@ -1,25 +1,22 @@
-package dev.afcasco.fctsorterbackend;
+package dev.afcasco.fctsorterbackend.controller;
 
 import dev.afcasco.fctsorterbackend.entity.Company;
-import dev.afcasco.fctsorterbackend.entity.CompanyModelAssembler;
+import dev.afcasco.fctsorterbackend.modelassembler.CompanyModelAssembler;
 import dev.afcasco.fctsorterbackend.entity.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
-import dev.afcasco.fctsorterbackend.service.CompanyService;
+import dev.afcasco.fctsorterbackend.repository.CompanyRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -30,23 +27,25 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-@Tag(name="Companies API")
+@Tag(name="Company", description = "Company Management Endpoints")
+@RequestMapping("/api")
 public class CompanyController {
 
 
-    private final CompanyService service;
+    private final CompanyRepository repository;
     private final CompanyModelAssembler assembler;
 
 
-    public CompanyController(CompanyService service, CompanyModelAssembler assembler) {
-        this.service = service;
+    public CompanyController(CompanyRepository repository, CompanyModelAssembler assembler) {
+        this.repository = repository;
         this.assembler = assembler;
     }
 
-    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
+    @PreAuthorize("hasRole('USER')")
+    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database", tags = {"User Endpoints"})
     @GetMapping("/companies")
     public CollectionModel<EntityModel<Company>> findAll() {
-        List<EntityModel<Company>> companies = service.findAll().stream()
+        List<EntityModel<Company>> companies = repository.findAll().stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -54,6 +53,7 @@ public class CompanyController {
     }
 
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get a company by id",description = "Returns a company matching the passed id")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Successfully retrieved"),
@@ -64,11 +64,12 @@ public class CompanyController {
     @SneakyThrows
     @GetMapping("/companies/{id}")
     public EntityModel<Company> findById(@PathVariable @Parameter(name="id",description = "Company id", example = "1") Long id) {
-        Company company = service.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
+        Company company = repository.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
         return assembler.toModel(company);
     }
 
 
+    @PreAuthorize("hasAnyRole('ADMIN','MOD')")
     @Operation(summary = "Update an existing company",description = "Updates an existing company given it's id, or creates a new one if it does not exist")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "201", description = "Created - Resource update/created"),
@@ -78,7 +79,7 @@ public class CompanyController {
     @PutMapping("/companies/{id}")
     @Parameter(name = "id", description = "Id of the company to update", example = "1")
     public ResponseEntity<?> replaceCompany(@Valid @RequestBody Company newCompany, @PathVariable Long id) {
-        Company updatedCompany = service.findById(id)
+        Company updatedCompany = repository.findById(id)
                 .map(company -> {
                     company.setCif(newCompany.getCif());
                     company.setName(newCompany.getName());
@@ -86,17 +87,19 @@ public class CompanyController {
                     company.setCity(newCompany.getCity());
                     company.setZipCode(newCompany.getZipCode());
                     company.setPhone(newCompany.getPhone());
-                    return service.save(company);
+                    return repository.save(company);
                 })
                 .orElseGet(() -> {
                     newCompany.setId(id);
-                    return service.save(newCompany);
+                    return repository.save(newCompany);
                 });
 
         EntityModel<Company> entityModel = assembler.toModel(updatedCompany);
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
+
+    @PreAuthorize("hasAnyRole('ADMIN','MOD')")
     @SneakyThrows
     @Operation(summary = "Delete a company",description = "Delete an existing company")
     @Parameter(name = "id", description = "Id of the company to delete", example = "1")
@@ -107,11 +110,12 @@ public class CompanyController {
     })
     @DeleteMapping("/companies/{id}")
     public ResponseEntity<?> deleteCompany(@PathVariable Long id) {
-        service.deleteById(id);
+        repository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create a company",description = "Adds a new company to the database")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "201", description = "Created - Resource created"),
@@ -120,13 +124,14 @@ public class CompanyController {
     })
     @PostMapping("/companies")
     public ResponseEntity<?> newCompany(@Valid @RequestBody Company company) {
-        EntityModel<Company> entityModel = assembler.toModel(service.save(company));
+        EntityModel<Company> entityModel = assembler.toModel(repository.save(company));
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
     }
 
 
     // TODO: 25/6/23 add zip number format validation when parameter is changed from String to int in the entity
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by zip code",description = "Finds all companies in the given zip code")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -135,7 +140,7 @@ public class CompanyController {
     @Parameter(name = "zip", description = "Zip code to match", example = "80085")
     @GetMapping("/companies/zip/{zip}")
     public CollectionModel<EntityModel<Company>> findByZipCode(@PathVariable("zip") String zip) {
-        List<EntityModel<Company>> companies = service.findCompanyByZipCode(zip).stream()
+        List<EntityModel<Company>> companies = repository.findCompanyByZipCode(zip).stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -143,6 +148,7 @@ public class CompanyController {
     }
 
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by city",description = "Finds all companies in the given city")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -151,7 +157,7 @@ public class CompanyController {
     @Parameter(name = "City", description = "City to match", example = "Springfield")
     @GetMapping("/companies/city/{city}")
     public CollectionModel<EntityModel<Company>> findAllByCityEqualsIgnoreCase(@PathVariable("city") String city) {
-        List<EntityModel<Company>> companies = service.findAllByCityEqualsIgnoreCase(city).stream()
+        List<EntityModel<Company>> companies = repository.findAllByCityEqualsIgnoreCase(city).stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -159,6 +165,7 @@ public class CompanyController {
     }
 
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by status",description = "Finds companies with a given status")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -168,13 +175,15 @@ public class CompanyController {
     @Parameter(name = "Status", description = "Status to match (ACTIVE, INACTIVE, MARKED_FOR_REVIEW)", example = "ACTIVE")
     @GetMapping("/companies/status/{status}")
     public CollectionModel<EntityModel<Company>> findAllByStatus(@PathVariable("status") Status status) {
-        List<EntityModel<Company>> companies = service.findAllByStatus(status).stream()
+        List<EntityModel<Company>> companies = repository.findAllByStatus(status).stream()
                 .map(assembler::toModel)
                 .toList();
 
         return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByStatus(status)).withSelfRel());
     }
 
+
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by name containing",description = "Finds companies whose name contains the passed parameter")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -184,13 +193,15 @@ public class CompanyController {
     @Parameter(name = "text", description = "text to search for in the companies names", example = "web")
     @GetMapping("/companies/nameContains")
     public CollectionModel<EntityModel<Company>> findAllByNameContainsIgnoreCase(@RequestParam("text") String text) {
-        List<EntityModel<Company>> companies = service.findAllByNameContainsIgnoreCase(text).stream()
+        List<EntityModel<Company>> companies = repository.findAllByNameContainsIgnoreCase(text).stream()
                 .map(assembler::toModel)
                 .toList();
 
         return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByNameContainsIgnoreCase(text)).withSelfRel());
     }
 
+
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Find by first digits of zip code",description = "Finds companies whose zip code starts with the given digits, useful to get companies by region")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -198,7 +209,7 @@ public class CompanyController {
     @Parameter(name = "digits", description = "The starting digits of the zip code we want to search for", example = "08 - would give companies from Barcelona region")
     @GetMapping("/companies/zipStartsWith")
     public CollectionModel<EntityModel<Company>> findCompaniesByZipCodeStartsWith(@RequestParam("zip") String zip) {
-        List<EntityModel<Company>> companies = service.findCompaniesByZipCodeStartsWith(zip).stream()
+        List<EntityModel<Company>> companies = repository.findCompaniesByZipCodeStartsWith(zip).stream()
                 .map(assembler::toModel)
                 .toList();
 
