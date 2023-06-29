@@ -30,6 +30,9 @@ jobs:
         
     - name: Add mysql URL
       run: |
+        echo "---------------------------------------------------"
+        pwd
+        echo "--------------------------alex----------------------"
         cd src/main/resources
         cp application.properties application.properties.old
         rm application.properties
