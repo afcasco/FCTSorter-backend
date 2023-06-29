@@ -33,7 +33,10 @@ jobs:
         echo "---------------------------------------------------"
         pwd
         echo "--------------------------alex----------------------"
-        cd src/main/resources
+        cd /home/runner/work/FCTSorter-backend/FCTSorter-backend/src/main/resources
+        echo "---------------------------------------------------"
+        pwd
+        echo "--------------------------alex----------------------"
         cp application.properties application.properties.old
         rm application.properties
         sed 1,3d application.properties.old >> application.properties
