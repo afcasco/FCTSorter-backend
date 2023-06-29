@@ -36,7 +36,7 @@ jobs:
         property: |
           'spring.datasource.url'
         value: |
-          {{ MYSQL_URL }}
+          ${{ MYSQL_URL }}
 
     - name: Build with Maven
       run: mvn package #-Dmaven.test.skip
