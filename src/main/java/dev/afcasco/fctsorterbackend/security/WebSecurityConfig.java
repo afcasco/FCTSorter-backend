@@ -1,5 +1,6 @@
 package dev.afcasco.fctsorterbackend.security;
 
+import dev.afcasco.fctsorterbackend.filter.TrailingSlashRedirectFilter;
 import dev.afcasco.fctsorterbackend.security.jwt.AuthEntryPointJwt;
 import dev.afcasco.fctsorterbackend.security.jwt.AuthTokenFilter;
 
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -69,6 +71,8 @@ public class WebSecurityConfig {
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        // Not sure if  it's the right way to add the filter
+        http.addFilterAfter(new TrailingSlashRedirectFilter(), BasicAuthenticationFilter.class);
         return http.build();
     }
 
