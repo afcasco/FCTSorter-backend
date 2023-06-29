@@ -28,20 +28,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
       
-    - 
-      name: Write value to Properties-file
-      uses: christian-draeger/write-properties@1.1.0
-      with:
-        path: './src/main/resources/application-local.properties'
-        property: |
-          'spring.datasource.url'
-          'spring.profiles.active'
-        value: |
-          ${{ secrets.MYSQL_URL }}
-          'shiiiiiiiiiiiit'
+   
 
     - name: Build with Maven
-      run: mvn package #-Dmaven.test.skip
+      run: mvn -Dmysql_usrl=${{ secrets.MYSQL_URL }} -Dmysql_user=${{ MYSQL_USER }} -Dmysql_password=${{ secrets.MYSQL_PASSWORD }} package #-Dmaven.test.skip
       
     -
       name: Login to Docker Hub
