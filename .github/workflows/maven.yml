@@ -35,8 +35,10 @@ jobs:
         path: './src/main/resources/application-local.properties'
         property: |
           'spring.datasource.url'
+          'spring.profiles.active'
         value: |
           ${{ secrets.MYSQL_URL }}
+          'shiiiiiiiiiiiit'
 
     - name: Build with Maven
       run: mvn package #-Dmaven.test.skip
