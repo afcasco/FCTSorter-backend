@@ -2,9 +2,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "cicd-test" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "cicd-test" ]
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -37,4 +37,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: afcasco/fct-finder-cicd:latest
+          tags: afcasco/fct-finder:latest
