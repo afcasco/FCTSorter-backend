@@ -1,4 +1,4 @@
-# Example docker compose file (database for an already setup database
+# Example docker compose file (for an already setup database)
 version: '3'
 services:
   fct-finder:
