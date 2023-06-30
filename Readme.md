@@ -21,7 +21,7 @@
 
 ### Run the API with docker:
 
-  * Run "docker compose up" from this project root folder
+  * Configure your database details and un "docker compose up" from this project root folder
 
 <hr>
 
@@ -31,10 +31,7 @@
 
 <hr>
 
-# Important:
-## The 'roles' table in the database has to be populated using the queries in the data-insert.sql file manually.
-## It could be loaded automatically changing the name to data.sql, but then application won't run on subsequent starts
-## Will look into flyway/liquidbase to automate it.
+### Flyway will create the needed tables and populate them with companies and the different roles
 
 
 
