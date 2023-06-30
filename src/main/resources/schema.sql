@@ -1,4 +1,3 @@
-/*
 create table IF NOT EXISTS company
 (
     id       bigint auto_increment
@@ -62,5 +61,3 @@ create table IF NOT EXISTS  users
     constraint UKr43af9ap4edm43mmtq01oddj6
         unique (username)
 );
-
-*/
