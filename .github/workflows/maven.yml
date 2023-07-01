@@ -34,7 +34,7 @@ jobs:
           tag-sha: true
 
       - name: Get version
-        run: $VERSION
+        run: echo ${{ env.VERSION }}
 
 
 
