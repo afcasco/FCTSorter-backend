@@ -1,4 +1,4 @@
-# Builds a current image of the working f
+# Builds docker image from the current code.
 version: '3'
 services:
   fct-finder:
