@@ -33,9 +33,9 @@ jobs:
 
       - name: Get version
         shell: bash -l {0}
-        run: echo project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
+        run: echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
-      - run: echo $GITHUB_ENV
+
 
 
         ###################################3333
