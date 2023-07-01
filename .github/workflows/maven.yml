@@ -10,6 +10,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      VERSION: $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
     steps:
       - uses: actions/checkout@v3
@@ -32,8 +34,7 @@ jobs:
           tag-sha: true
 
       - name: Get version
-        shell: bash -l {0}
-        run: echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        run: $VERSION
 
 
 
