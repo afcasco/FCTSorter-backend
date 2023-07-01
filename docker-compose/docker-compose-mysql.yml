@@ -1,4 +1,4 @@
-# Run a mysql container for testing purposes
+# Runs a mysql container with the specified database values
 version: '3'
 
 services:
@@ -13,8 +13,3 @@ services:
       MYSQL_USER: fctfinder
       MYSQL_PASSWORD: fctfinder
       MYSQL_RANDOM_ROOT_PASSWORD: 1
-    volumes:
-      - mysql-data:/var/lib/mysql
-
-volumes:
-  mysql-data:

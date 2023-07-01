@@ -1,3 +1,6 @@
+# WORKING
+
+
 # Run the application pulling the latest image from dockerhub with a new mysql container.
 version: '3'
 
@@ -5,7 +8,7 @@ services:
 
   fct-finder:
     container_name: fct-finder
-    image: afcasco/fct-finder
+    image: afcasco/fct-finder:latest
     ports:
       - "8080:8080"
     environment:
