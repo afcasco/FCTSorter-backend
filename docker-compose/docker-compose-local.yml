@@ -1,8 +1,5 @@
-# WORKS
-
-
-# Build docker image and run it as a stack with a new mysql container.
-version: '3'
+# Build docker image and runs it as a stack with a new mysql container.
+version: '3.8'
 
 services:
 
@@ -12,7 +9,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      server.port: 8080
+      #server.port: 8080
       spring.datasource.url: jdbc:mysql://fct-finder-db:3306/fct_finder
       spring.datasource.username: fctfinder
       spring.datasource.password: fctfinder
