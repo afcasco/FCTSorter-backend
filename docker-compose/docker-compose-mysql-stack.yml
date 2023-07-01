@@ -1,0 +1,49 @@
+# Run the application pulling the latest image from dockerhub with a new mysql container.
+version: '3'
+
+services:
+
+  fct-finder:
+    container_name: fct-finder
+    image: afcasco/fct-finder
+    ports:
+      - "8080:8080"
+    environment:
+      # new docker + mysql setup use "docker" profile to insert the roles into de database
+      # "deploy" profile needs a working database url + user + password (with tables and roles created)
+      # "local" has the default following values:
+      #   spring.datasource.url=jdbc:mysql://localhost:53306/fctsorter
+      #   spring.datasource.username=root
+      #   spring.datasource.password=fctsorter
+      # spring.profiles.active: local
+      server.port: 8080
+      spring.datasource.url: jdbc:mysql://fct-finder-db:3306/fct_finder
+      spring.datasource.username: fctfinder
+      spring.datasource.password: fctfinder
+      fctfinder.app.jwtSecret: ==================================fctFinderSecretKey=spring=afcasco=================================
+    networks:
+      - fct-finder-net
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    container_name: fct-finder-db
+    image: mysql:latest
+    ports:
+      - "3500:3306"
+    environment:
+      MYSQL_DATABASE: fct_finder
+      MYSQL_USER: fctfinder
+      MYSQL_PASSWORD: fctfinder
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+    networks:
+      - fct-finder-net
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 3s
+      retries: 20
+
+networks:
+  fct-finder-net:
+    name: fct-finder
