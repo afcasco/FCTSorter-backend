@@ -1,0 +1,20 @@
+# Run a mysql container for testing purposes
+version: '3'
+
+services:
+
+  database:
+    container_name: fct-finder-database
+    image: mysql:latest
+    ports:
+      - "53306:3306"
+    environment:
+      MYSQL_DATABASE: fct_finder
+      MYSQL_USER: fctfinder
+      MYSQL_PASSWORD: fctfinder
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
