@@ -49,9 +49,9 @@ jobs:
 
 
       - run: echo curtag is ${{ steps.tag.outputs.curtag }}
-                   - run: echo prevtag is ${{ steps.tag.outputs.prevtag }}
-                   - run: echo line_count is ${{ steps.tag.outputs.line_count }}
-                   - run: cat body.log
+      - run: echo prevtag is ${{ steps.tag.outputs.prevtag }}
+      - run: echo line_count is ${{ steps.tag.outputs.line_count }}
+      - run: cat body.log
 
         # End getting tag
 
