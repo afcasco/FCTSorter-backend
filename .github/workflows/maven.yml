@@ -10,8 +10,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      VERSION: $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
     steps:
       - uses: actions/checkout@v3
@@ -33,6 +31,11 @@ jobs:
           images: afcasco/fct-finder
           tag-sha: true
 
+      - name: Retrieve version
+        id: version
+        run: |
+          echo "TAG_NAME=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
         ###################################3333
 
       - name: Login to Docker Hub
@@ -50,4 +53,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.docker_meta.outputs.tags }}, ${{ secrets.DOCKER_USERNAME }}/fct-finder:${{ env.VERSION }}
+          tags: |
+            ${{ steps.docker_meta.outputs.tags }}
+            ${{ secrets.DOCKER_USERNAME }}/fct-finder:${{ steps.version.outputs.TAG_NAME }}
