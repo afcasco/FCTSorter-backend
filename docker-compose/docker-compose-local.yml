@@ -1,3 +1,6 @@
+# WORKS
+
+
 # Build docker image and run it as a stack with a new mysql container.
 version: '3'
 

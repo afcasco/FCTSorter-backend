@@ -1,19 +1,14 @@
-# Run the application with a previously configured database
+# Runs application container
+# Edit database url/details to match your running database
 version: '3'
 services:
   fct-finder:
     container_name: fct-finder
-    image: afcasco/fct-finder
+    image: test:latest
     ports:
       - "8080:8080"
-    # Override spring application.properties with desired values
     environment:
-      server.port: 8080
-      # mysql url (databse needs to exist but can be empty)
-      spring.datasource.url: jdbc:mysql://example.com:3306/mydatabase
-      # mysql user
-      spring.datasource.username: myuser
-      # mysql password
-      spring.datasource.password: mypassword
-      #
-      fctfinder.app.jwtSecret: ==================================my-jwt-super-secret=================================
+      spring.datasource.url: jdbc:mysql://192.168.1.88:53306/fct_finder
+      spring.datasource.username: fctfinder
+      spring.datasource.password: fctfinder
+      fctfinder.app.jwtSecret: ==================================fctFinderSecretKey=spring=afcasco=================================
