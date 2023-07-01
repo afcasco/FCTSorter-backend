@@ -1,6 +1,5 @@
 package dev.afcasco.fctsorterbackend.payload.request;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -9,7 +8,6 @@ import lombok.Setter;
 
 import java.util.Set;
 
-@Hidden
 @Getter
 @Setter
 public class SignupRequest {
