@@ -7,31 +7,43 @@
 
 <hr>
 
+#### <b>For now, the database is preloaded with Flyway with some companies, and users signing up can add whatever role they want ("admin","mod","user" or any combination as an array in the payload).<b>
+
+<hr>
+
 ### Running the API from the IDE:
 
 * #### Create a local database:
-  * <i>You can run a full mysql installation or use docker/docker compose</i>
-    <br>Docker run example:
-    <br>$ docker run --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=fctfinder
-* #### Load the project
-* #### Change the profile in 'application.properties' to 'local'
-* #### Edit the details of your local mysql database into 'application.properties'
+  <i>You can use the docker-compose-mysql.yml file</i><br>
+  <code>$ cd docker-compose && docker compose -f docker-compose-mysql up -d</code>
+  <br>The default values for the database are already setup in "application.properties":
+  * URL:
+    <code>jdbc:mysql://localhost:53306/fct_finder</code>
+  * User: <code>fctfinder</code>
+  * Password: <code>fctfinder</code>
+  * Database: <code>fct_finder</code>
+  * Localhost port: <code>53306</code>
+* #### Load the project and run it
+
 
 <hr>
 
 ### Run the API with docker:
 
-  * Configure your database details and un "docker compose up" from this project root folder
+* #### Create a local database (same steps as running from the ide:
+* #### Edit the docker compose file "docker-compose.yml" to match your database details.
+
+  <i>And run docker compose:</i><br>
+    <code>$ cd docker-compose && docker compose up -d</code>
 
 <hr>
 
 ### Run the API and the database with docker compose:
+* #### Run both the application and a new mysql container as a stack
+  <code>$ cd docker-compose && docker compose -f docker-compose-mysql-stack.yml up -d</code>
 
-  * Run "docker compose -f docker-compose-with-mysql.yml up" from this project root folder
 
-<hr>
 
-### Flyway will create the needed tables and populate them with companies and the different roles
 
 
 
