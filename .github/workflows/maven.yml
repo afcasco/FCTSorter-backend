@@ -37,5 +37,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{secrets.DOCKER_HUB_USERNAME}}/fct-finder:latest
-            ${{secrets.DOCKER_HUB_USERNAME}}/fct-finder:new
+            ${{ secrets.DOCKER_HUB_USERNAME }}/fct-finder:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/fct-finder:new
