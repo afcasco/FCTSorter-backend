@@ -3,8 +3,6 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "master" ]
-    tags:
-      - 'v*'
   #pull_request:
     #branches: [ "master" ]
 
@@ -49,22 +47,14 @@ jobs:
           echo "prevtag=$prevtag" >> $GITHUB_OUTPUT
           echo "line_count=$line_count" >> $GITHUB_OUTPUT  
 
+
+          echo $GITHUB_OUTPUT
+          echo $curtag
         # End getting tag
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: afcasco/fct-finder
-          flavor: latest=true
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}     
-            
-            
 
-        # End of docker meta
+
+
 
 
 
@@ -83,4 +73,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.labels }}
+          tags: ${ { afcasco/fct-finder:latest } }
