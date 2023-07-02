@@ -1,6 +1,6 @@
 package dev.afcasco.fctsorterbackend.security.services;
 
-import dev.afcasco.fctsorterbackend.entity.RefreshToken;
+import dev.afcasco.fctsorterbackend.model.RefreshToken;
 import dev.afcasco.fctsorterbackend.exception.TokenRefreshException;
 import dev.afcasco.fctsorterbackend.repository.RefreshTokenRepository;
 import dev.afcasco.fctsorterbackend.repository.UserRepository;
@@ -32,7 +32,9 @@ public class RefreshTokenService  {
         return refreshTokenRepository.findByToken(token);
     }
 
+
     public RefreshToken createRefreshToken(Long userId) {
+
         RefreshToken refreshToken = new RefreshToken();
 
         refreshToken.setUser(userRepository.findById(userId).get());

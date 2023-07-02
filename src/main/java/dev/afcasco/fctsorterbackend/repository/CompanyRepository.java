@@ -1,7 +1,7 @@
 package dev.afcasco.fctsorterbackend.repository;
 
-import dev.afcasco.fctsorterbackend.entity.Company;
-import dev.afcasco.fctsorterbackend.entity.Status;
+import dev.afcasco.fctsorterbackend.model.Company;
+import dev.afcasco.fctsorterbackend.model.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,15 +1,13 @@
-package dev.afcasco.fctsorterbackend.entity;
+package dev.afcasco.fctsorterbackend.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "roles")
 public class Role {
 

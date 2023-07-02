@@ -1,6 +1,6 @@
 package dev.afcasco.fctsorterbackend.repository;
 
-import dev.afcasco.fctsorterbackend.entity.User;
+import dev.afcasco.fctsorterbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

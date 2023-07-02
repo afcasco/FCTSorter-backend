@@ -1,12 +1,12 @@
 package dev.afcasco.fctsorterbackend.controller;
 
-import dev.afcasco.fctsorterbackend.entity.RefreshToken;
+import dev.afcasco.fctsorterbackend.model.RefreshToken;
 import dev.afcasco.fctsorterbackend.exception.TokenRefreshException;
 import dev.afcasco.fctsorterbackend.repository.RoleRepository;
 import dev.afcasco.fctsorterbackend.repository.UserRepository;
-import dev.afcasco.fctsorterbackend.entity.ERole;
-import dev.afcasco.fctsorterbackend.entity.Role;
-import dev.afcasco.fctsorterbackend.entity.User;
+import dev.afcasco.fctsorterbackend.model.ERole;
+import dev.afcasco.fctsorterbackend.model.Role;
+import dev.afcasco.fctsorterbackend.model.User;
 import dev.afcasco.fctsorterbackend.payload.request.LoginRequest;
 import dev.afcasco.fctsorterbackend.payload.request.SignupRequest;
 import dev.afcasco.fctsorterbackend.payload.response.MessageResponse;
@@ -71,6 +71,9 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
+
+        // TODO see if this fixes the random login failures because there's already a refresh token in the db
+        //refreshTokenService.deleteByUserId(userDetails.getId());
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 

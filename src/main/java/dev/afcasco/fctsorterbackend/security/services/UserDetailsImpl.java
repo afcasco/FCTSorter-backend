@@ -1,14 +1,13 @@
 package dev.afcasco.fctsorterbackend.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.afcasco.fctsorterbackend.entity.User;
+import dev.afcasco.fctsorterbackend.model.User;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import java.io.Serial;
 import java.util.Collection;

@@ -1,8 +1,7 @@
 package dev.afcasco.fctsorterbackend.modelassembler;
 
 import dev.afcasco.fctsorterbackend.controller.CompanyController;
-import dev.afcasco.fctsorterbackend.entity.Company;
-import io.swagger.v3.oas.annotations.Hidden;
+import dev.afcasco.fctsorterbackend.model.Company;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;

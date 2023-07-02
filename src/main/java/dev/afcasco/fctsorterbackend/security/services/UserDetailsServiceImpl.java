@@ -1,6 +1,6 @@
 package dev.afcasco.fctsorterbackend.security.services;
 
-import dev.afcasco.fctsorterbackend.entity.User;
+import dev.afcasco.fctsorterbackend.model.User;
 import dev.afcasco.fctsorterbackend.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;

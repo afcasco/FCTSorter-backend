@@ -1,7 +1,7 @@
 package dev.afcasco.fctsorterbackend.repository;
 
-import dev.afcasco.fctsorterbackend.entity.ERole;
-import dev.afcasco.fctsorterbackend.entity.Role;
+import dev.afcasco.fctsorterbackend.model.ERole;
+import dev.afcasco.fctsorterbackend.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

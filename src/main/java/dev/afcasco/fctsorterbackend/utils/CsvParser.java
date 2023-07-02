@@ -1,8 +1,8 @@
 package dev.afcasco.fctsorterbackend.utils;
 
 
-import dev.afcasco.fctsorterbackend.entity.Company;
-import dev.afcasco.fctsorterbackend.entity.Status;
+import dev.afcasco.fctsorterbackend.model.Company;
+import dev.afcasco.fctsorterbackend.model.Status;
 import dev.afcasco.fctsorterbackend.repository.CompanyRepository;
 import org.springframework.stereotype.Component;
 

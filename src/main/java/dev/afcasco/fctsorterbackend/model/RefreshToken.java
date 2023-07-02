@@ -1,4 +1,4 @@
-package dev.afcasco.fctsorterbackend.entity;
+package dev.afcasco.fctsorterbackend.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

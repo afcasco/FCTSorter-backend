@@ -1,9 +1,8 @@
 package dev.afcasco.fctsorterbackend.repository;
 
-import dev.afcasco.fctsorterbackend.entity.RefreshToken;
-import dev.afcasco.fctsorterbackend.entity.User;
+import dev.afcasco.fctsorterbackend.model.RefreshToken;
+import dev.afcasco.fctsorterbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -17,4 +16,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     int deleteByUser(User user);*/
 
     void deleteByUser(User user);
+
+    RefreshToken findByUser(User user);
 }

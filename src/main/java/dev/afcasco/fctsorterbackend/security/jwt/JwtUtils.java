@@ -1,6 +1,6 @@
 package dev.afcasco.fctsorterbackend.security.jwt;
 
-import dev.afcasco.fctsorterbackend.entity.User;
+import dev.afcasco.fctsorterbackend.model.User;
 import dev.afcasco.fctsorterbackend.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

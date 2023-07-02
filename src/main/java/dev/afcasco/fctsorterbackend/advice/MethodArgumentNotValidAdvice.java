@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-@Priority(3)
+@Priority(5)
 public class MethodArgumentNotValidAdvice {
     @ResponseBody
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

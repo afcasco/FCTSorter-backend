@@ -1,8 +1,8 @@
 package dev.afcasco.fctsorterbackend.controller;
 
-import dev.afcasco.fctsorterbackend.entity.Company;
+import dev.afcasco.fctsorterbackend.model.Company;
 import dev.afcasco.fctsorterbackend.modelassembler.CompanyModelAssembler;
-import dev.afcasco.fctsorterbackend.entity.Status;
+import dev.afcasco.fctsorterbackend.model.Status;
 import dev.afcasco.fctsorterbackend.exception.CompanyNofFoundException;
 import dev.afcasco.fctsorterbackend.repository.CompanyRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +18,6 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 
@@ -41,8 +40,9 @@ public class CompanyController {
         this.assembler = assembler;
     }
 
+
     @PreAuthorize("hasRole('USER')")
-    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database", tags = {"User Endpoints"})
+    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
     @GetMapping("/companies")
     public CollectionModel<EntityModel<Company>> findAll() {
         List<EntityModel<Company>> companies = repository.findAll().stream()
@@ -87,6 +87,7 @@ public class CompanyController {
                     company.setCity(newCompany.getCity());
                     company.setZipCode(newCompany.getZipCode());
                     company.setPhone(newCompany.getPhone());
+                    company.setStatus(newCompany.getStatus());
                     return repository.save(company);
                 })
                 .orElseGet(() -> {
