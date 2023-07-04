@@ -1,11 +1,14 @@
-# Build docker image and runs it as a stack with a new mysql container.
+# Builds and runs a local docker image with current code.
+# Sets up a mysql database in the same network as a stack.
 version: '3.8'
 
 services:
 
   fct-finder:
     container_name: fct-finder
-    build: ../.
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-mvn
     ports:
       - "8080:8080"
     environment:

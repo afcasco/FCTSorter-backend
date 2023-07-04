@@ -1,6 +1,6 @@
 FROM maven:3-openjdk-17-slim AS MAVEN_TOOL_CHAIN
-COPY pom.xml /tmp/
-COPY src /tmp/src/
+COPY ../pom.xml /tmp/
+COPY ../src /tmp/src/
 WORKDIR /tmp/
 RUN mvn package
 

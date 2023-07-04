@@ -1,10 +1,10 @@
-# Runs application container
-# Edit database url/details to match your running database
-version: '3'
+# Run latest image from dockerhub
+version: '3.8'
 services:
   fct-finder:
     container_name: fct-finder
-    image: test:latest
+    image: afcasco/fct-finder:latest
+    pull_policy: always
     ports:
       - "8080:8080"
     environment:
