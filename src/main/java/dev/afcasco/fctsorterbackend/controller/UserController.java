@@ -28,7 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @Tag(name = "User", description = "User Management Endpoints")
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 

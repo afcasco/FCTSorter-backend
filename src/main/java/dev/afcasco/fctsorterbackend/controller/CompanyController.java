@@ -27,7 +27,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @Tag(name="Company", description = "Company Management Endpoints")
-@RequestMapping("/api")
+@RequestMapping("/companies")
 public class CompanyController {
 
 
@@ -43,7 +43,7 @@ public class CompanyController {
 
     @PreAuthorize("hasRole('USER')")
     @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
-    @GetMapping("/companies")
+    @GetMapping
     public CollectionModel<EntityModel<Company>> findAll() {
         List<EntityModel<Company>> companies = repository.findAll().stream()
                 .map(assembler::toModel)
@@ -62,7 +62,7 @@ public class CompanyController {
 
     })
     @SneakyThrows
-    @GetMapping("/companies/{id}")
+    @GetMapping("/{id}")
     public EntityModel<Company> findById(@PathVariable @Parameter(name="id",description = "Company id", example = "1") Long id) {
         Company company = repository.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
         return assembler.toModel(company);
@@ -76,7 +76,7 @@ public class CompanyController {
             @ApiResponse(responseCode = "400", description = "Bad request - Error validating data")
 
     })
-    @PutMapping("/companies/{id}")
+    @PutMapping("/{id}")
     @Parameter(name = "id", description = "Id of the company to update", example = "1")
     public ResponseEntity<?> replaceCompany(@Valid @RequestBody Company newCompany, @PathVariable Long id) {
         Company updatedCompany = repository.findById(id)
@@ -109,7 +109,7 @@ public class CompanyController {
             @ApiResponse(responseCode = "400", description = "Bad request - Wrong format for parameter id")
 
     })
-    @DeleteMapping("/companies/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCompany(@PathVariable Long id) {
         repository.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -123,7 +123,7 @@ public class CompanyController {
             @ApiResponse(responseCode = "400", description = "Bad request - Error validating data")
 
     })
-    @PostMapping("/companies")
+    @PostMapping
     public ResponseEntity<?> newCompany(@Valid @RequestBody Company company) {
         EntityModel<Company> entityModel = assembler.toModel(repository.save(company));
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -131,17 +131,17 @@ public class CompanyController {
     }
 
 
-    // TODO: 25/6/23 add zip number format validation when parameter is changed from String to int in the entity
+
     @PreAuthorize("hasRole('USER')")
-    @Operation(summary = "Find by zip code",description = "Finds all companies in the given zip code")
+    @Operation(summary = "Find by zip code, enter either the starting numbers or the full zip code)",description = "Finds all companies in the given zip code")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
 
     })
     @Parameter(name = "zip", description = "Zip code to match", example = "80085")
-    @GetMapping("/companies/zip/{zip}")
+    @GetMapping("/zip/{zip}")
     public CollectionModel<EntityModel<Company>> findByZipCode(@PathVariable("zip") String zip) {
-        List<EntityModel<Company>> companies = repository.findCompanyByZipCode(zip).stream()
+        List<EntityModel<Company>> companies = repository.findCompaniesByZipCodeStartsWith(zip).stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -156,7 +156,7 @@ public class CompanyController {
 
     })
     @Parameter(name = "City", description = "City to match", example = "Springfield")
-    @GetMapping("/companies/city/{city}")
+    @GetMapping("/city/{city}")
     public CollectionModel<EntityModel<Company>> findAllByCityEqualsIgnoreCase(@PathVariable("city") String city) {
         List<EntityModel<Company>> companies = repository.findAllByCityEqualsIgnoreCase(city).stream()
                 .map(assembler::toModel)
@@ -174,7 +174,7 @@ public class CompanyController {
 
     })
     @Parameter(name = "Status", description = "Status to match (ACTIVE, INACTIVE, MARKED_FOR_REVIEW)", example = "ACTIVE")
-    @GetMapping("/companies/status/{status}")
+    @GetMapping("/status/{status}")
     public CollectionModel<EntityModel<Company>> findAllByStatus(@PathVariable("status") Status status) {
         List<EntityModel<Company>> companies = repository.findAllByStatus(status).stream()
                 .map(assembler::toModel)
@@ -192,28 +192,12 @@ public class CompanyController {
 
     })
     @Parameter(name = "text", description = "text to search for in the companies names", example = "web")
-    @GetMapping("/companies/nameContains")
+    @GetMapping("/nameContains")
     public CollectionModel<EntityModel<Company>> findAllByNameContainsIgnoreCase(@RequestParam("text") String text) {
         List<EntityModel<Company>> companies = repository.findAllByNameContainsIgnoreCase(text).stream()
                 .map(assembler::toModel)
                 .toList();
 
         return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByNameContainsIgnoreCase(text)).withSelfRel());
-    }
-
-
-    @PreAuthorize("hasRole('USER')")
-    @Operation(summary = "Find by first digits of zip code",description = "Finds companies whose zip code starts with the given digits, useful to get companies by region")
-    @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
-    })
-    @Parameter(name = "digits", description = "The starting digits of the zip code we want to search for", example = "08 - would give companies from Barcelona region")
-    @GetMapping("/companies/zipStartsWith")
-    public CollectionModel<EntityModel<Company>> findCompaniesByZipCodeStartsWith(@RequestParam("zip") String zip) {
-        List<EntityModel<Company>> companies = repository.findCompaniesByZipCodeStartsWith(zip).stream()
-                .map(assembler::toModel)
-                .toList();
-
-        return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findCompaniesByZipCodeStartsWith(zip)).withSelfRel());
     }
 }
