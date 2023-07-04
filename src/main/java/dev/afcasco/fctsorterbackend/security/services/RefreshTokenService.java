@@ -2,6 +2,7 @@ package dev.afcasco.fctsorterbackend.security.services;
 
 import dev.afcasco.fctsorterbackend.model.RefreshToken;
 import dev.afcasco.fctsorterbackend.exception.TokenRefreshException;
+import dev.afcasco.fctsorterbackend.model.User;
 import dev.afcasco.fctsorterbackend.repository.RefreshTokenRepository;
 import dev.afcasco.fctsorterbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +53,10 @@ public class RefreshTokenService  {
         }
 
         return token;
+    }
+
+    public RefreshToken findByUser(User user){
+        return refreshTokenRepository.findByUser(user);
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package dev.afcasco.fctsorterbackend.controller;
 
 import dev.afcasco.fctsorterbackend.model.ERole;
+import dev.afcasco.fctsorterbackend.model.RefreshToken;
 import dev.afcasco.fctsorterbackend.model.Role;
 import dev.afcasco.fctsorterbackend.model.User;
 import dev.afcasco.fctsorterbackend.exception.UserNotFoundException;
@@ -8,6 +9,7 @@ import dev.afcasco.fctsorterbackend.modelassembler.UserModelAssembler;
 import dev.afcasco.fctsorterbackend.payload.request.UserUpdateData;
 import dev.afcasco.fctsorterbackend.repository.RoleRepository;
 import dev.afcasco.fctsorterbackend.repository.UserRepository;
+import dev.afcasco.fctsorterbackend.security.services.RefreshTokenService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.CollectionModel;
@@ -20,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -35,12 +36,15 @@ public class UserController {
     private final RoleRepository roleRepository;
     private final UserModelAssembler assembler;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
 
-    public UserController(UserRepository userRepository, RoleRepository roleRepository, UserModelAssembler assembler, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository userRepository, RoleRepository roleRepository, UserModelAssembler assembler,
+                          PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.assembler = assembler;
         this.passwordEncoder = passwordEncoder;
+        this.refreshTokenService = refreshTokenService;
     }
 
 
@@ -76,7 +80,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @SneakyThrows
-    @PutMapping("/role/add/{id}/{eRole}")
+    @PutMapping("/{id}/addrole/{eRole}")
     public ResponseEntity<?> addRole(@PathVariable Long id, @PathVariable ERole eRole) {
 
         Role role = roleRepository.findByName(eRole).orElseThrow();
@@ -93,7 +97,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/role/remove/{id}/{eRole}")
+    @PutMapping("/{id}/derole/{eRole}")
     @SneakyThrows
     public ResponseEntity<?> removeRole(@PathVariable Long id, @PathVariable ERole eRole) {
 
@@ -110,5 +114,18 @@ public class UserController {
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}/revoke")
+    @SneakyThrows
+    public ResponseEntity<?> revokeToken(@PathVariable Long id){
+        User user = userRepository.findById(id).orElseThrow(()->new UserNotFoundException(id));
+        RefreshToken refreshToken = refreshTokenService.findByUser(user);
+        if(refreshToken != null){
+            refreshTokenService.deleteByUserId(id);
+            return ResponseEntity.ok().body("refresh token deleted");
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 }
