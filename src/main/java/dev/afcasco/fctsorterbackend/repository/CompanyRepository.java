@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company,Long> {
 
-    List<Company> findCompanyByZipCode(String zipCode);
     List<Company> findCompaniesByZipCodeStartsWith(String startsWith);
     List<Company> findAllByCityEqualsIgnoreCase(String city);
     List<Company> findAllByNameContainsIgnoreCase(String text);
