@@ -22,6 +22,10 @@ import java.util.Date;
         @ExceptionHandler(AlreadyLoggedInException.class)
         @ResponseStatus(HttpStatus.OK)
         public ErrorMessage alreadyLoggedInHandler(AlreadyLoggedInException e){
-            return new ErrorMessage(HttpStatus.OK.value(), Date.from(Instant.now()),"Aready logged in","user was already logged in");
+            return new ErrorMessage(
+                    HttpStatus.OK.value(),
+                    Date.from(Instant.now()),
+                    "Aready logged in",
+                    "user was already logged in");
         }
 }
