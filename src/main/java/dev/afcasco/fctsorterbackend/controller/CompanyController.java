@@ -20,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -59,14 +60,13 @@ public class CompanyController {
             @ApiResponse(responseCode = "200", description = "Ok - Successfully retrieved"),
             @ApiResponse(responseCode = "404", description = "Not found - The company was not found"),
             @ApiResponse(responseCode = "400", description = "Bad request - Wrong format for parameter id")
-
     })
+    @SneakyThrows
     public EntityModel<Company> findById(@PathVariable
-                                         @Parameter(name = "id", description = "Company id", example = "1") Long id)
-            throws CompanyNofFoundException {
-
-        Company company = repository.findById(id).orElseThrow(() -> new CompanyNofFoundException(id));
-        return assembler.toModel(company);
+                                         @Parameter(name = "id", description = "Company id", example = "1") Long id) {
+        return repository.findById(id)
+                .map(assembler::toModel)
+                .orElseThrow(() -> new CompanyNofFoundException(id));
     }
 
 
@@ -151,7 +151,6 @@ public class CompanyController {
 
         return CollectionModel.of(companies, linkTo(methodOn(CompanyController.class).findAllByCityEqualsIgnoreCase(city)).withSelfRel());
     }
-
 
 
     @GetMapping("/status/{status}")
