@@ -22,6 +22,9 @@ public class JwtUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
+    @Value("${server.servlet.context-path}")
+    private  String contextPath;
+
     @Value("${fctfinder.app.jwtSecret}")
     private String jwtSecret;
 
@@ -39,21 +42,21 @@ public class JwtUtils {
     }
 
     public ResponseCookie getCleanJwtCookie() {
-        return ResponseCookie.from(jwtCookie, null).path("/api").build();
+        return ResponseCookie.from(jwtCookie, null).path(contextPath).build();
     }
 
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
         String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-        return generateCookie(jwtCookie, jwt, "/api");
+        return generateCookie(jwtCookie, jwt, contextPath);
     }
 
     public ResponseCookie generateJwtCookie(User user) {
         String jwt = generateTokenFromUsername(user.getUsername());
-        return generateCookie(jwtCookie, jwt, "/api");
+        return generateCookie(jwtCookie, jwt, contextPath);
     }
 
     public ResponseCookie generateRefreshJwtCookie(String refreshToken){
-        return generateCookie(jwtRefreshCookie, refreshToken,"/api/auth/refreshtoken");
+        return generateCookie(jwtRefreshCookie, refreshToken,contextPath+"/auth/refreshtoken");
     }
 
     public String getJwtRefreshFromCookies(HttpServletRequest request) {
@@ -61,7 +64,7 @@ public class JwtUtils {
     }
 
     public ResponseCookie getCleanJwtRefreshCookie() {
-        return ResponseCookie.from(jwtRefreshCookie, null).path("/api/auth/refreshtoken").build();
+        return ResponseCookie.from(jwtRefreshCookie, null).path(contextPath+"/auth/refreshtoken").build();
     }
 
 

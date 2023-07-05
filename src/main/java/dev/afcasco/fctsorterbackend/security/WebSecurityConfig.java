@@ -64,8 +64,6 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(AUTH_WHITE_LIST).permitAll()
-                              //  .requestMatchers("/api/auth/**").permitAll()
-                             //   .requestMatchers("/api/companies/**").permitAll()
                                 .anyRequest().authenticated()
                 );
 
@@ -76,12 +74,11 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    private static final String[] AUTH_WHITE_LIST = {
+    private final String[] AUTH_WHITE_LIST = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/api/auth/**",
+            "/auth/**",
             "/docs/**",
-            "/api/swagger-ui/**"
     };
 }

@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @Tag(name = "Auth", description = "Authentication Management Endpoints")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
