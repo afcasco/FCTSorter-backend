@@ -5,6 +5,7 @@ import dev.afcasco.fctsorterbackend.exception.TokenRefreshException;
 import java.util.Date;
 
 
+import dev.afcasco.fctsorterbackend.model.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

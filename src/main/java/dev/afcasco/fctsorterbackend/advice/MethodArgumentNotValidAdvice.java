@@ -13,7 +13,7 @@ import java.util.Map;
 @RestControllerAdvice
 @Priority(5)
 public class MethodArgumentNotValidAdvice {
-    @ResponseBody
+    //@ResponseBody
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String invalidArgumentHandler(MethodArgumentTypeMismatchException e) {
@@ -22,7 +22,7 @@ public class MethodArgumentNotValidAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
+    //@ResponseBody
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {

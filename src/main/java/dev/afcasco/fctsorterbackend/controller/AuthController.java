@@ -1,5 +1,6 @@
 package dev.afcasco.fctsorterbackend.controller;
 
+import dev.afcasco.fctsorterbackend.exception.AlreadyLoggedInException;
 import dev.afcasco.fctsorterbackend.model.RefreshToken;
 import dev.afcasco.fctsorterbackend.exception.TokenRefreshException;
 import dev.afcasco.fctsorterbackend.repository.RoleRepository;
@@ -57,7 +58,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws AlreadyLoggedInException {
 
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -75,7 +76,17 @@ public class AuthController {
         // TODO see if this fixes the random login failures because there's already a refresh token in the db
         //refreshTokenService.deleteByUserId(userDetails.getId());
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+        // createRefreshToken throws a sqlconstraintviolation if user was already
+        // signed in, trying to save the refresh token (which is a one to one relationship)
+        // this captures the exception and returns an ErrorMessage
+        RefreshToken refreshToken;
+        try {
+            refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+        } catch (Exception e) {
+            throw new AlreadyLoggedInException(loginRequest.getUsername());
+            //return ResponseEntity.ok().body(new MessageResponse("User already logged in"));
+
+        }
 
         ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(refreshToken.getToken());
 
