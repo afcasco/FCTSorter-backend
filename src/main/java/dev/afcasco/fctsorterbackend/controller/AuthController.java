@@ -15,6 +15,7 @@ import dev.afcasco.fctsorterbackend.payload.response.UserInfoResponse;
 import dev.afcasco.fctsorterbackend.security.jwt.JwtUtils;
 import dev.afcasco.fctsorterbackend.security.services.UserDetailsImpl;
 import dev.afcasco.fctsorterbackend.security.services.RefreshTokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -34,10 +35,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Tag(name = "Auth", description = "Authentication Management Endpoints")
-@CrossOrigin(origins = "*", maxAge = 3600)
+
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Auth", description = "Authentication Management Endpoints")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -58,6 +60,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
+    @Operation(summary = "Sign in endpoint", description = "Sign in and obtain a jwt token and refreshtoken")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws AlreadyLoggedInException {
 
         Authentication authentication = authenticationManager
@@ -73,19 +76,14 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        // TODO see if this fixes the random login failures because there's already a refresh token in the db
-        //refreshTokenService.deleteByUserId(userDetails.getId());
-
         // createRefreshToken throws a sqlconstraintviolation if user was already
         // signed in, trying to save the refresh token (which is a one to one relationship)
-        // this captures the exception and returns an ErrorMessage
+        // this captures the exception that gets handled by AlreadyLoggedInExceptionAdvice
         RefreshToken refreshToken;
         try {
             refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
         } catch (Exception e) {
             throw new AlreadyLoggedInException(loginRequest.getUsername());
-            //return ResponseEntity.ok().body(new MessageResponse("User already logged in"));
-
         }
 
         ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(refreshToken.getToken());
@@ -100,6 +98,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "Sign up endpoint", description = "Register as a new user")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
@@ -150,6 +149,8 @@ public class AuthController {
     }
 
     @PostMapping("/signout")
+    @Operation(summary = "Sign out endpoint", description = "Sign out, deletes refreshtoken and sets empty jwt and refresh" +
+            "token in the headers")
     public ResponseEntity<?> logoutUser() {
         Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -167,6 +168,7 @@ public class AuthController {
     }
 
     @PostMapping("/refreshtoken")
+    @Operation(summary = "Refresh jwt token", description = "Gets a new jwt token for a user with a valid refreshtoken")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
         String refreshToken = jwtUtils.getJwtRefreshFromCookies(request);
 
@@ -184,6 +186,4 @@ public class AuthController {
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Refresh token is empty!"));
     }
-
-
 }

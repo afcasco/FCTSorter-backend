@@ -10,6 +10,7 @@ import dev.afcasco.fctsorterbackend.payload.request.UserUpdateData;
 import dev.afcasco.fctsorterbackend.repository.RoleRepository;
 import dev.afcasco.fctsorterbackend.repository.UserRepository;
 import dev.afcasco.fctsorterbackend.security.services.RefreshTokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.CollectionModel;
@@ -48,23 +49,28 @@ public class UserController {
     }
 
 
-    @SneakyThrows
-    @PreAuthorize("hasRole('ADMIN') or principal.id == #id")
+
     @GetMapping("/{id}")
-    public EntityModel<User> findById(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN') or principal.id == #id")
+    @Operation(summary = "Get a user by id", description = "Returns a user matching the passed id")
+    @SneakyThrows
+    public EntityModel<User> findById(@PathVariable Long id)  {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return assembler.toModel(user);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "List all users", description = "Returns a list of all the users")
     public CollectionModel<EntityModel<User>> findAll() {
         List<EntityModel<User>> users = userRepository.findAll().stream().map(assembler::toModel).toList();
         return CollectionModel.of(users, linkTo(methodOn(UserController.class).findAll()).withSelfRel());
     }
 
-    @PreAuthorize("hasRole('ADMIN') or principal.id == #id")
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN') or principal.id == #id")
+    @Operation(summary = "Update an existing user", description = "Can be called by a user with role 'ADMIN' or by " +
+            "the current logged in user on itself, only modifies email & password")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateData data, @PathVariable Long id) {
         User updatedUser = userRepository.findById(id)
                 .map(user -> {
@@ -78,10 +84,10 @@ public class UserController {
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @SneakyThrows
     @PutMapping("/{id}/addrole/{eRole}")
-    public ResponseEntity<?> addRole(@PathVariable Long id, @PathVariable ERole eRole) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Add a role to user", description = "Adds a role to an existing user")
+    public ResponseEntity<?> addRole(@PathVariable Long id, @PathVariable ERole eRole) throws UserNotFoundException {
 
         Role role = roleRepository.findByName(eRole).orElseThrow();
 
@@ -96,10 +102,10 @@ public class UserController {
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/derole/{eRole}")
-    @SneakyThrows
-    public ResponseEntity<?> removeRole(@PathVariable Long id, @PathVariable ERole eRole) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Remove a role from user", description = "Removes a role from an existing user")
+    public ResponseEntity<?> removeRole(@PathVariable Long id, @PathVariable ERole eRole) throws UserNotFoundException {
 
         Role role = roleRepository.findByName(eRole).orElseThrow();
 
@@ -115,10 +121,10 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/revoke")
-    @SneakyThrows
-    public ResponseEntity<?> revokeToken(@PathVariable Long id){
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Invalidate refreshtoken", description = "Invalidated refreshtoken for user with passed userid")
+    public ResponseEntity<?> revokeToken(@PathVariable Long id) throws UserNotFoundException {
         User user = userRepository.findById(id).orElseThrow(()->new UserNotFoundException(id));
         RefreshToken refreshToken = refreshTokenService.findByUser(user);
         if(refreshToken != null){
@@ -127,6 +133,4 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
-
 }
-

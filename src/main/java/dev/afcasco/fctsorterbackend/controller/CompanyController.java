@@ -20,7 +20,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -44,7 +43,7 @@ public class CompanyController {
 
 
     @GetMapping
-    @Operation(summary = "List all companies", description = "Returns a list of all the companies in the database")
+    @Operation(summary = "List all companies", description = "Returns a list of all the companies")
     public CollectionModel<EntityModel<Company>> findAll() {
         List<EntityModel<Company>> companies = repository.findAll().stream()
                 .map(assembler::toModel)
