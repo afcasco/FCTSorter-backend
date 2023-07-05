@@ -26,8 +26,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-@Tag(name="Company", description = "Company Management Endpoints")
 @RequestMapping("/companies")
+@PreAuthorize("hasAnyRole('USER','MOD','ADMIN')")
+@Tag(name="Company", description = "Company Management Endpoints")
 public class CompanyController {
 
 
@@ -41,9 +42,9 @@ public class CompanyController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
-    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
     @GetMapping
+    @Operation(summary= "List all companies",description = "Returns a list of all the companies in the database")
+
     public CollectionModel<EntityModel<Company>> findAll() {
         List<EntityModel<Company>> companies = repository.findAll().stream()
                 .map(assembler::toModel)
@@ -53,7 +54,7 @@ public class CompanyController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+
     @Operation(summary = "Get a company by id",description = "Returns a company matching the passed id")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Successfully retrieved"),
@@ -116,7 +117,7 @@ public class CompanyController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+
     @Operation(summary = "Create a company",description = "Adds a new company to the database")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "201", description = "Created - Resource created"),
@@ -132,7 +133,7 @@ public class CompanyController {
 
 
 
-    @PreAuthorize("hasRole('USER')")
+
     @Operation(summary = "Find by zip code, enter either the starting numbers or the full zip code)",description = "Finds all companies in the given zip code")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -149,7 +150,7 @@ public class CompanyController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+
     @Operation(summary = "Find by city",description = "Finds all companies in the given city")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -166,7 +167,7 @@ public class CompanyController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+
     @Operation(summary = "Find by status",description = "Finds companies with a given status")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
@@ -184,7 +185,7 @@ public class CompanyController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+
     @Operation(summary = "Find by name containing",description = "Finds companies whose name contains the passed parameter")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "Ok - Accepted"),
