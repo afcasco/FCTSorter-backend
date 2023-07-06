@@ -79,6 +79,9 @@ public class AuthController {
         // createRefreshToken throws a sqlconstraintviolation if user was already
         // signed in, trying to save the refresh token (which is a one to one relationship)
         // this captures the exception that gets handled by AlreadyLoggedInExceptionAdvice
+
+        // If the client doesnt have the cookies it can't login anymore, gets an user already logged in
+        // because there's still the refresh token in the database...
         RefreshToken refreshToken;
         try {
             refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
